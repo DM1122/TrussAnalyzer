@@ -6,7 +6,7 @@ import veclib
 
 disp_size = [1000,500]
 disp_scl = 25       # every meter represents disp_scl pixels
-disp_speed = 2
+disp_speed = 10
 
 
 # joints = [      # [x-coord, y-coord, support?]
@@ -142,9 +142,9 @@ def calc_dirs():
 
 def calc_lengths():
     for member in members:
-        l = veclib.mag(members[member]['dir'])
-        members[member]['length'] = l
-
+        leng = veclib.mag(members[member]['dir'])
+        members[member]['length'] = leng
+    
 
 def calc_angs():
     angs = {}
@@ -153,20 +153,26 @@ def calc_angs():
     # find all member pairs and add them to pair array (excluding pairs bisected by a member)
     pairs = []
     for joint in joints:
-        
 
-        connected_members = []
+        joined_members = []
         for member in members:
             if (members[member]['start'] == joints[joint]['pos']) or (members[member]['end'] == joints[joint]['pos']):      # check if a member is connected to this joint
-                connected_members.append(member)
-        
-        print(connected_members)
+                joined_members.append(member)
 
-        ang = veclib.ang(,)
+        joint_angs = []
+        for joined_member in joined_members:
+            others = joined_members.copy()
+            others.remove(joined_member)
 
-        # angs[joint] = 
+            for e in others:
+                ang = veclib.ang(members[joined_member]['dir'], members[e]['dir'])
+                joint_angs.append(ang)
+            
 
-    # 
+        joint_angs.sort()
+        print(joint_angs)
+        joint_angs = joint_angs[:len(joined_members)-1]
+        print(joint_angs)
 
 
 

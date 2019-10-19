@@ -186,8 +186,8 @@ def ang(a,b):
 
 
 if __name__ == '__main__':
-    a = [1,2]
-    b = [3,4]
+    a = [1,1]
+    b = [1,-1]
     c = 2
 
     print("Testing veclib...")
