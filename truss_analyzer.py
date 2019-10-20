@@ -15,18 +15,19 @@ disp_speed = 10
 joints = {
     'A':{
         'pos':[0,0],
-        'support?':True,    # will take support types and orientations into account later
+        'support':'pin',    # will take support types and orientations into account later
+        'reaction':None,
         'connected':None    # list of connected members
     },
 
     'B':{
         'pos':[5,0],
-        'support?':True
+        'support':'roller',
     },
 
     'C':{
         'pos':[2.5,3],
-        'support?':False
+        'support':None,
     }
 }
 
@@ -57,9 +58,9 @@ members = {
 
 forces = {
     'GRAV':{
-        'pos':joints['C'],
-        'dir':[0,-1],
-        'mag':[50]
+        'pos':joints['C']['pos'],
+        'ang':-90.0,
+        'mag':50.0
     }
 }
 
@@ -107,7 +108,7 @@ def disp_draw_joints():
         tim.goto(veclib.scal(joints[joint]['pos'],disp_scl))
         
         tim.pendown()
-        if joints[joint]['support?']:
+        if joints[joint]['support'] is not None:
             tim.setheading(90)
             tim.backward(10)
             tim.shape('triangle')
@@ -151,6 +152,7 @@ def calc_angs():
         
         members[member]['ang'] = theta
 
+
 def det_joint_members():
     for joint in joints:
         connected = []
@@ -159,6 +161,21 @@ def det_joint_members():
                 connected.append(member)
         
         joints[joint]['connected'] = connected
+
+
+# def calc_support_rxns():
+    
+def calc_net_moment(origin):
+    sum = 0
+
+    for f in forces:
+        print(forces[f]['mag'])
+        sum += forces[f]['mag'] * math.degrees(math.sin(forces[f]['ang'])) * veclib.magsub(origin, forces[f]['pos'])      # this method does not take into account angled forces at angled members! (?)
+    
+
+
+    return sum
+
 
 
 if __name__ == '__main__':
@@ -175,11 +192,23 @@ if __name__ == '__main__':
 
     det_joint_members()
 
+    
+    for joint in joints:        # find pin & roller supports
 
-    for joint in joints:
 
+        if joints[joint]['support'] == 'pin':
+            joint_pin = joint
+        
+        if joints[joint]['support'] == 'roller':
+            joint_roller = joint
+    
+    
+    moment = calc_net_moment(joints[joint_pin]['pos'])
+    
+    # solve for roller upwards force
+    joints[joint_roller]['reaction'] = -moment
 
-
+    print(joints[joint_roller])
 
     input("Press Enter to continue...")
 
