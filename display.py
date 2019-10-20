@@ -2,11 +2,11 @@
 
 tim = turtle.Turtle()
 
-def setup():
+def setup(speed=5):
     tim.shape('classic')
     tim.color('black')
     tim.pensize(3)
-    tim.speed(disp_speed)
+    tim.speed(speed)
     
     screen = turtle.Screen()
     screen.setup(width=disp_size[0], height=disp_size[1], startx=None, starty=None)
