@@ -43,12 +43,36 @@ def sub(a,b):
 
     return c
 
+def add(a,b):
+    '''
+    Adds vectors a b and returns vec c. Assumes vectors are of equal dims.
+
+    Args:
+     a (list): point/vector
+     b (list): point/vector
+    '''
+
+    c = [b[i]+a[i] for i in range(len(a))]
+
+    return c
+
+
 def magsub(a,b):
     '''
     Combined mag and sub functions: mag(sub())
     '''
 
     c = mag(sub(a,b))
+
+    return c
+
+
+def magadd(a,b):
+    '''
+    Combined mag and add functions: mag(add())
+    '''
+
+    c = mag(add(a,b))
 
     return c
 

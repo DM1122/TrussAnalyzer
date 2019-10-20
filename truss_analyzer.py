@@ -182,11 +182,12 @@ def calc_net_moment(origin):
     sum = 0
 
     for f in forces:
-        # sum +=  *  * veclib.magsub(origin, forces[f]['pos'])      # this method does not take into account angled forces at angled members! (?)
-        sum += forces[f]['mag'] * (math.degrees(math.sin(forces[f]['ang'])) * veclib.sub(origin, forces[f]['pos'])[0] - math.degrees(math.cos(forces[f]['ang'])) * veclib.sub(origin, forces[f]['pos'])[1])
+        
+        sin = math.sin(math.radians(forces[f]['ang']))
+        cos = math.cos(math.radians(forces[f]['ang']))
+
+        sum += forces[f]['mag'] * (sin * veclib.sub(origin, forces[f]['pos'])[0] - cos * veclib.sub(origin, forces[f]['pos'])[1])
     
-
-
     return sum
 
 
@@ -221,9 +222,11 @@ if __name__ == '__main__':
     moment = calc_net_moment(joints[joint_pin]['pos'])
     
     # solve for roller upwards force
-    joints[joint_roller]['reaction'] = -moment / veclib.sub(joints[joint_pin]['pos'], joints[joint_roller]['pos'])[0]
+    joints[joint_roller]['reaction'] = [0, -moment / veclib.sub(joints[joint_pin]['pos'], joints[joint_roller]['pos'])[0]]
 
     print(joints[joint_roller])
+
+    joints[]
 
     input("Press Enter to continue...")
 
