@@ -11,19 +11,12 @@ disp_scl = 25       # every meter represents disp_scl pixels
 disp_speed = 10
 
 
-# joints = [      # [x-coord, y-coord, support?]
-#     [0,0,1],
-#     [5,0,0],
-#     [11,0,1],
-#     [2.5,3,0],
-#     [7.5,3,0],
-# ]
-
 
 joints = {
     'A':{
         'pos':[0,0],
-        'support?':True
+        'support?':True,    # will take support types and orientations into account later
+        'connected':None    # list of connected members
     },
 
     'B':{
@@ -45,32 +38,30 @@ members = {
         'dir':None,
         'length':None,
         'ang':None,
-        'force':None
+        'force':None,
+        'state':None,       # tension:1, compression:-1
+        'status':None,      # nominal:1, failed:0   
+        'mode':None         # 'elastic', 'yeilding', 'crushed', 'buckling'
     },
 
     'AC':{
         'start':joints['A']['pos'],
-        'end':joints['C']['pos'],
-        'dir':None,
-        'length':None,
-        'ang':None,
-        'force':None
+        'end':joints['C']['pos']
     },
 
     'CB':{
         'start':joints['C']['pos'],
-        'end':joints['B']['pos'],
-        'dir':None,
-        'length':None,
-        'ang':None,
-        'force':None
+        'end':joints['B']['pos']
     }
-
 }
 
-
-#should be automatically generated and populated
-# angles = {}
+forces = {
+    'GRAV':{
+        'pos':joints['C'],
+        'dir':[0,-1],
+        'mag':[50]
+    }
+}
 
 
 
@@ -151,7 +142,6 @@ def calc_lengths():
         members[member]['length'] = leng
 
 
-
 def calc_angs():
     for member in members:
         if members[member]['dir'][0] != 0:      # ensure member is not vertical
@@ -161,6 +151,14 @@ def calc_angs():
         
         members[member]['ang'] = theta
 
+def det_joint_members():
+    for joint in joints:
+        connected = []
+        for member in members:
+            if (members[member]['start'] == joints[joint]['pos']) or (members[member]['end'] == joints[joint]['pos']):      # check if a member is connected to this joint
+                connected.append(member)
+        
+        joints[joint]['connected'] = connected
 
 
 if __name__ == '__main__':
@@ -174,6 +172,13 @@ if __name__ == '__main__':
     calc_dirs()
     calc_lengths()
     calc_angs()
+
+    det_joint_members()
+
+
+    for joint in joints:
+
+
 
 
     input("Press Enter to continue...")
