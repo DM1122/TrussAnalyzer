@@ -1,0 +1,22 @@
+    # Calculate all angles between all vectors at all joints
+    # for joint in joints:
+    #     angs[joint][member] =  
+    #     joined_members = []
+    #     for member in members:
+    #         if (members[member]['start'] == joints[joint]['pos']) or (members[member]['end'] == joints[joint]['pos']):      # check if a member is connected to this joint
+    #             joined_members.append(member)
+
+    #     joint_angs = []
+    #     for joined_member in joined_members:
+    #         others = joined_members.copy()
+    #         others.remove(joined_member)
+
+    #         for e in others:
+    #             ang = veclib.ang(members[joined_member]['dir'], members[e]['dir'])
+    #             joint_angs.append(ang)
+            
+
+    #     joint_angs.sort()
+    #     print(joint_angs)
+    #     joint_angs = joint_angs[:len(joined_members)-1]
+    #     print(joint_angs)
