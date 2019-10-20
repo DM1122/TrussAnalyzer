@@ -1,7 +1,9 @@
 # A script designed to analyze trusses (all of them)
 # David Maranto
 
+import math
 import turtle
+
 import veclib
 
 disp_size = [1000,500]
@@ -42,6 +44,7 @@ members = {
         'end':joints['B']['pos'],
         'dir':None,
         'length':None,
+        'ang':None,
         'force':None
     },
 
@@ -50,6 +53,7 @@ members = {
         'end':joints['C']['pos'],
         'dir':None,
         'length':None,
+        'ang':None,
         'force':None
     },
 
@@ -58,6 +62,7 @@ members = {
         'end':joints['B']['pos'],
         'dir':None,
         'length':None,
+        'ang':None,
         'force':None
     }
 
@@ -144,35 +149,42 @@ def calc_lengths():
     for member in members:
         leng = veclib.mag(members[member]['dir'])
         members[member]['length'] = leng
-    
+
+
 
 def calc_angs():
-    angs = {}
+    for member in members:
+        if members[member]['dir'][0] != 0:      # ensure member is not vertical
+            theta = math.degrees(math.atan(members[member]['dir'][1] / members[member]['dir'][0]))     # θ = tan-1(y/x)
+        else:
+            theta = 90.0
+        
+        members[member]['ang'] = theta
 
 
-    # find all member pairs and add them to pair array (excluding pairs bisected by a member)
-    pairs = []
-    for joint in joints:
 
-        joined_members = []
-        for member in members:
-            if (members[member]['start'] == joints[joint]['pos']) or (members[member]['end'] == joints[joint]['pos']):      # check if a member is connected to this joint
-                joined_members.append(member)
+    # Calculate all angles between all vectors at all joints
+    # for joint in joints:
+    #     angs[joint][member] =  
+    #     joined_members = []
+    #     for member in members:
+    #         if (members[member]['start'] == joints[joint]['pos']) or (members[member]['end'] == joints[joint]['pos']):      # check if a member is connected to this joint
+    #             joined_members.append(member)
 
-        joint_angs = []
-        for joined_member in joined_members:
-            others = joined_members.copy()
-            others.remove(joined_member)
+    #     joint_angs = []
+    #     for joined_member in joined_members:
+    #         others = joined_members.copy()
+    #         others.remove(joined_member)
 
-            for e in others:
-                ang = veclib.ang(members[joined_member]['dir'], members[e]['dir'])
-                joint_angs.append(ang)
+    #         for e in others:
+    #             ang = veclib.ang(members[joined_member]['dir'], members[e]['dir'])
+    #             joint_angs.append(ang)
             
 
-        joint_angs.sort()
-        print(joint_angs)
-        joint_angs = joint_angs[:len(joined_members)-1]
-        print(joint_angs)
+    #     joint_angs.sort()
+    #     print(joint_angs)
+    #     joint_angs = joint_angs[:len(joined_members)-1]
+    #     print(joint_angs)
 
 
 
