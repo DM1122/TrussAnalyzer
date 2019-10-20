@@ -131,6 +131,19 @@ def disp_draw_members():
     tim.color('black')
 
 
+def disp_draw_forces():
+    for f in forces:
+        tim.penup()
+        tim.goto(veclib.scal(forces[f]['pos'],disp_scl))
+        tim.setheading(forces[f]['ang'])
+        tim.backward(10)
+        tim.color('green')
+        tim.shape('arrow')
+        tim.stamp()
+        tim.shape('classic')
+        tim.color('black')
+
+
 def calc_dirs():
     for member in members:
         dir = veclib.sub(members[member]['start'], members[member]['end'])
@@ -169,8 +182,8 @@ def calc_net_moment(origin):
     sum = 0
 
     for f in forces:
-        print(forces[f]['mag'])
-        sum += forces[f]['mag'] * math.degrees(math.sin(forces[f]['ang'])) * veclib.magsub(origin, forces[f]['pos'])      # this method does not take into account angled forces at angled members! (?)
+        # sum +=  *  * veclib.magsub(origin, forces[f]['pos'])      # this method does not take into account angled forces at angled members! (?)
+        sum += forces[f]['mag'] * (math.degrees(math.sin(forces[f]['ang'])) * veclib.sub(origin, forces[f]['pos'])[0] - math.degrees(math.cos(forces[f]['ang'])) * veclib.sub(origin, forces[f]['pos'])[1])
     
 
 
@@ -185,6 +198,8 @@ if __name__ == '__main__':
     disp_draw_axes()
     disp_draw_joints()
     disp_draw_members()
+    disp_draw_forces()
+    tim.hideturtle()
 
     calc_dirs()
     calc_lengths()
@@ -206,7 +221,7 @@ if __name__ == '__main__':
     moment = calc_net_moment(joints[joint_pin]['pos'])
     
     # solve for roller upwards force
-    joints[joint_roller]['reaction'] = -moment
+    joints[joint_roller]['reaction'] = -moment / veclib.sub(joints[joint_pin]['pos'], joints[joint_roller]['pos'])[0]
 
     print(joints[joint_roller])
 
